@@ -34,6 +34,14 @@ namespace XMLSource.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Results");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Pressure = 108.0,
+                            Temperature = 20.5
+                        });
                 });
 #pragma warning restore 612, 618
         }

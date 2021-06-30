@@ -15,8 +15,8 @@ namespace PublicAPI.Controllers
     public class ResultsController : ControllerBase
     {
         private readonly HttpClient client;
-        private string JSONUrl = "http://localhost:58270/api/jsonresults";
-        private string XMLUrl = "http://localhost:43529/api/xmlresults";
+        private string JSONUrl = "http://localhost:58270/api/jsonresults/1";
+        private string XMLUrl = "http://localhost:43529/api/xmlresults/1";
 
         public ResultsController()
         {
