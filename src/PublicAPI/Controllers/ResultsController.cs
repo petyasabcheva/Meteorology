@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,11 +14,38 @@ namespace PublicAPI.Controllers
     [ApiController]
     public class ResultsController : ControllerBase
     {
-        // GET: api/<ResultsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly HttpClient client;
+        private string JSONUrl = "http://localhost:58270/api/jsonresults";
+        private string XMLUrl = "http://localhost:43529/api/xmlresults";
+
+        public ResultsController()
         {
-            return new string[] { "value1", "value2" };
+            client = new HttpClient();
+        }
+
+        [HttpGet]
+        public async Task<string> Get()
+        {
+            var finalResult = new StringBuilder();
+            finalResult.AppendLine("This is the result from the first source in JSON");
+            var JSONResult = "";
+            HttpResponseMessage JSONResponse = await client.GetAsync(JSONUrl);
+            if (JSONResponse.IsSuccessStatusCode)
+            {
+                JSONResult = await JSONResponse.Content.ReadAsStringAsync();
+            }
+
+            finalResult.AppendLine(JSONResult);
+            finalResult.AppendLine("This is the result from the second source in XML");
+            var XMLResult = "";
+            HttpResponseMessage XMLResponse = await client.GetAsync(XMLUrl);
+            if (XMLResponse.IsSuccessStatusCode)
+            {
+                XMLResult = await XMLResponse.Content.ReadAsStringAsync();
+            }
+
+            finalResult.AppendLine(XMLResult);
+            return finalResult.ToString().TrimEnd();
         }
 
     }
