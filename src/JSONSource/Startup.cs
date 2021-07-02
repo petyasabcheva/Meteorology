@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JSONSource.Data;
+using JSONSource.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace JSONSource
 {
@@ -24,6 +27,7 @@ namespace JSONSource
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<MyAppSettings>(Configuration.GetSection(MyAppSettings.SectionName));
             services.AddControllers();
         }
 

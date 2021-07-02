@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PublicAPI.Services;
 
 namespace PublicAPI
 {
@@ -25,7 +26,7 @@ namespace PublicAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.Configure<MyAppSettings>(Configuration.GetSection(MyAppSettings.SectionName));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

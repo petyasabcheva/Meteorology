@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JSONSource.Data
 {
-    public class JSONDbContext:DbContext
+    public class JsonDbContext:DbContext
     {
         public DbSet<Result> Results { get; set; }
 

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XMLSource.Services;
 
 namespace XMLSource
 {
@@ -24,6 +25,7 @@ namespace XMLSource
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<MyAppSettings>(Configuration.GetSection(MyAppSettings.SectionName));
             services.AddControllers();
         }
 

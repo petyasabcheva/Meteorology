@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JSONSource.Migrations
 {
-    [DbContext(typeof(JSONDbContext))]
+    [DbContext(typeof(JsonDbContext))]
     [Migration("20210629192454_InitialCreate")]
     partial class InitialCreate
     {

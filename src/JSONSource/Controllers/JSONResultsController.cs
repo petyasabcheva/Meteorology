@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JSONSource.Data;
+using JSONSource.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,18 +14,30 @@ namespace JSONSource.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JSONResultsController : ControllerBase
+    public class JsonResultsController : ControllerBase
     {
-        private JSONDbContext db;
-        public JSONResultsController()
+        private JsonDbContext db;
+        private readonly IOptions<MyAppSettings> _options;
+
+
+        public JsonResultsController(IOptions<MyAppSettings> options)
         {
-            db = new JSONDbContext();
+            db = new JsonDbContext();
+            _options = options;
         }
         // GET: api/<ResultsController>
         [HttpGet]
-        public IEnumerable<Result> Get()
+        public IEnumerable<Result> Get(string encodedKey)
         {
-            return db.Results.ToList();
+            var jsonKey = _options.Value.AppKey;
+            var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
+            var decodedKey= System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            if (decodedKey==jsonKey)
+            {
+                return db.Results.ToList();
+            }
+
+            return null;
         }
 
         // GET api/<ResultsController>/5
