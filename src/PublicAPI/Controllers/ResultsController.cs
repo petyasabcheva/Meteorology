@@ -41,7 +41,7 @@ namespace PublicAPI.Controllers
             finalResult.AppendLine("This is the result from the first source in JSON");
             var jsonResult = "";
             var jsonEncodedKey = EncodeKey(_jsonAppKey);
-            
+
             HttpResponseMessage jsonResponse = await _client.SendAsync(CreateRequestMessage(jsonEncodedKey, _jsonUrl));
 
             if (jsonResponse.IsSuccessStatusCode)
@@ -56,7 +56,7 @@ namespace PublicAPI.Controllers
             var xmlResult = "";
             var xmlEncodedKey = EncodeKey(_xmlAppKey);
 
-            HttpResponseMessage xmlResponse = await _client.SendAsync(CreateRequestMessage(xmlEncodedKey,_xmlUrl));
+            HttpResponseMessage xmlResponse = await _client.SendAsync(CreateRequestMessage(xmlEncodedKey, _xmlUrl));
             if (xmlResponse.IsSuccessStatusCode)
             {
                 xmlResult = await xmlResponse.Content.ReadAsStringAsync();
@@ -64,6 +64,7 @@ namespace PublicAPI.Controllers
 
             finalResult.AppendLine(xmlResult);
             return finalResult.ToString().TrimEnd();
+
         }
 
         static string EncodeKey(string key)
@@ -79,7 +80,11 @@ namespace PublicAPI.Controllers
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri(url),
-                Headers = { { "Authorization", $"Basic {encodedKey}" } },
+                Headers =
+                {
+                    { "Authorization", $"Basic {encodedKey}"}
+                },
+
             };
         }
 

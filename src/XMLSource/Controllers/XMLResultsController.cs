@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using XMLSource.Data;
 using XMLSource.Services;
@@ -25,18 +31,26 @@ namespace XMLSource.Controllers
 
         // GET: api/<ResultsController>
         [HttpGet]
-        public IEnumerable<Result> Get()
+        public IActionResult Get()
         {
             var xmlKey = _options.Value.AppKey;
             var request = Request;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
+            var result= db.Results.FirstOrDefault();
+            var resultToReturn = new ResultToReturn();
+
+            
             if (decodedKey == xmlKey)
             {
-                return db.Results.ToList();
+                resultToReturn.Error = 0;
+                resultToReturn.Temperature = result.Temperature;
+                resultToReturn.Pressure = result.Pressure;
+                var serializedResult = SerializeObject(resultToReturn);
+                return Ok(serializedResult);
             }
 
-            return null;
+            return Unauthorized();
         }
 
         static string GetKeyFromRequest(HttpRequest request)
@@ -53,5 +67,17 @@ namespace XMLSource.Controllers
             var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
             return decodedKey;
         }
+
+        public static string SerializeObject( ResultToReturn toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
+            }
+        }
+
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using JSONSource.Data;
 using JSONSource.Services;
 using Microsoft.AspNetCore.Http;
@@ -28,19 +29,22 @@ namespace JSONSource.Controllers
         }
         // GET: api/<ResultsController>
         [HttpGet]
-        public IEnumerable<Result> Get()
+        public IActionResult Get()
         {
             var jsonKey = _options.Value.AppKey;
             var request = Request;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
-
+            var result = db.Results.FirstOrDefault();
+            var response = new ResultToReturn();
             if (decodedKey==jsonKey)
             {
-                return db.Results.ToList();
+                response.Temperature = result.Temperature;
+                response.Pressure = result.Pressure;
+                return Ok(response);
             }
 
-            return null;
+            return Unauthorized();
         }
 
         static string GetKeyFromRequest(HttpRequest request)
