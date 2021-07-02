@@ -21,8 +21,8 @@ namespace PublicAPI.Controllers
         private readonly IOptions<MyAppSettings> _options;
         private readonly string _jsonAppKey;
         private readonly string _xmlAppKey;
-        private string _jsonUrl = "http://localhost:58270/api/jsonresults/1";
-        private string _xmlUrl = "http://localhost:43529/api/xmlresults/1";
+        private string _jsonUrl = "http://localhost:58270/api/jsonresults";
+        private string _xmlUrl = "http://localhost:43529/api/xmlresults";
 
 
 
@@ -31,7 +31,7 @@ namespace PublicAPI.Controllers
             _client = new HttpClient();
             _options = options;
             _jsonAppKey= _options.Value.JsonAppKey;
-            _xmlAppKey= _options.Value.XMLAppKey;
+            _xmlAppKey= _options.Value.XmlAppKey;
         }
 
         [HttpGet]

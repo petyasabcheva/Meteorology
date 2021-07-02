@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JSONSource.Data;
 using JSONSource.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -27,11 +28,13 @@ namespace JSONSource.Controllers
         }
         // GET: api/<ResultsController>
         [HttpGet]
-        public IEnumerable<Result> Get(string encodedKey)
+        public IEnumerable<Result> Get()
         {
             var jsonKey = _options.Value.AppKey;
-            var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
-            var decodedKey= System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            var request = Request;
+            var encodedKey = GetKeyFromRequest(request);
+            var decodedKey = DecodeKey(encodedKey);
+
             if (decodedKey==jsonKey)
             {
                 return db.Results.ToList();
@@ -40,12 +43,19 @@ namespace JSONSource.Controllers
             return null;
         }
 
-        // GET api/<ResultsController>/5
-        [HttpGet("{id}")]
-        public Result Get(int id)
+        static string GetKeyFromRequest(HttpRequest request)
         {
-            return db.Results.FirstOrDefault(x => x.Id == id);
+            var authHeader = request.Headers.First(h => h.Key == "Authorization").Value.ToString();
+            var authHeaderContent = authHeader.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToArray();
+            var key = authHeaderContent[1];
+            return key;
         }
 
+        static string DecodeKey(string encodedKey)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
+            var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            return decodedKey;
+        }
     }
 }

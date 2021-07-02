@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using XMLSource.Data;
 using XMLSource.Services;
@@ -21,13 +22,15 @@ namespace XMLSource.Controllers
             db = new XMLDbContext();
             _options = options;
         }
+
         // GET: api/<ResultsController>
         [HttpGet]
-        public IEnumerable<Result> Get(string encodedKey)
+        public IEnumerable<Result> Get()
         {
             var xmlKey = _options.Value.AppKey;
-            var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
-            var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            var request = Request;
+            var encodedKey = GetKeyFromRequest(request);
+            var decodedKey = DecodeKey(encodedKey);
             if (decodedKey == xmlKey)
             {
                 return db.Results.ToList();
@@ -36,11 +39,19 @@ namespace XMLSource.Controllers
             return null;
         }
 
-        // GET api/<ResultsController>/5
-        [HttpGet("{id}")]
-        public Result Get(int id)
+        static string GetKeyFromRequest(HttpRequest request)
         {
-            return db.Results.FirstOrDefault(x => x.Id == id);
+            var authHeader = request.Headers.First(h => h.Key == "Authorization").Value.ToString();
+            var authHeaderContent = authHeader.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToArray();
+            var key = authHeaderContent[1];
+            return key;
+        }
+
+        static string DecodeKey(string encodedKey)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
+            var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            return decodedKey;
         }
     }
 }

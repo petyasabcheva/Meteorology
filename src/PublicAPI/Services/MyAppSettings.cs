@@ -9,6 +9,6 @@ namespace PublicAPI.Services
     {
         public const string SectionName = "Authorization";
         public string JsonAppKey { get; set; }
-        public string XMLAppKey { get; set; }
+        public string XmlAppKey { get; set; }
     }
 }
