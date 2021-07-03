@@ -15,12 +15,12 @@ namespace XMLSource.Controllers
     [ApiController]
     public class XMLResultsController : ControllerBase
     {
-        private XMLDbContext db;
+        private XMLDbContext _db;
         private readonly IOptions<MyAppSettings> _options;
 
-        public XMLResultsController(IOptions<MyAppSettings> options)
+        public XMLResultsController(IOptions<MyAppSettings> options,XMLDbContext db)
         {
-            db = new XMLDbContext();
+            this._db = db;
             _options = options;
         }
 
@@ -53,7 +53,7 @@ namespace XMLSource.Controllers
             var xmlKey = _options.Value.AppKey;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
-            var result = db.Results.First();
+            var result = _db.Results.First();
            
 
             if (decodedKey == xmlKey)
@@ -105,7 +105,7 @@ namespace XMLSource.Controllers
         {
             var timeNow = DateTime.UtcNow;
             var startTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 14, 30, 0);
-            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 20, 20, 0);
+            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 16, 20, 0);
 
             if (startTimeToday > timeNow || endTimeToday < timeNow)
             {

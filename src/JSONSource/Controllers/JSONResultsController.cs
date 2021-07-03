@@ -15,12 +15,12 @@ namespace JSONSource.Controllers
     [ApiController]
     public class JsonResultsController : ControllerBase
     {
-        private JsonDbContext db;
+        private JsonDbContext _db;
         private readonly IOptions<MyAppSettings> _options;
 
-        public JsonResultsController(IOptions<MyAppSettings> options)
+        public JsonResultsController(IOptions<MyAppSettings> options, JsonDbContext db)
         {
-            db = new JsonDbContext();
+            this._db = db;
             _options = options;
         }
         // GET: api/<ResultsController>
@@ -31,19 +31,25 @@ namespace JSONSource.Controllers
             if (!request.Headers.Any(x => x.Key == "Authorization"))
             {
                 //no authorization header
-                return new ObjectResult(new ResultInformation() { Message = "Unauthorized", StatusCode = 401 });
+                return new ObjectResult(new ResultInformation() { Message = "Unauthorized", StatusCode = 401 })
+                {
+                    StatusCode = 401
+                };
 
             }
 
             if (!IsWorkingNow())
             {
                 //source is offline 
-                return new ObjectResult(new ResultInformation() {Message = "Offline",StatusCode = 504});
+                return new ObjectResult(new ResultInformation() { Message = "Offline", StatusCode = 504 })
+                {
+                    StatusCode = 504
+                };
             }
             var jsonKey = _options.Value.AppKey;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
-            var result = db.Results.First();
+            var result = _db.Results.First();
             var response = new ResultToReturn();
 
             if (decodedKey == jsonKey)
@@ -56,7 +62,7 @@ namespace JSONSource.Controllers
             if (decodedKey != jsonKey)
             {
                 //wrong authorization header
-                return new ObjectResult(new ResultInformation() { Message = "Unauthorized", StatusCode = 401 });
+                return new ObjectResult(new ResultInformation() { Message = "Unauthorized", StatusCode = 401 }) { StatusCode = 401 };
 
             }
 
@@ -81,7 +87,7 @@ namespace JSONSource.Controllers
 
         static bool IsWorkingNow()
         {
-            var  timeNow = DateTime.UtcNow;
+            var timeNow = DateTime.UtcNow;
             var startTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 8, 30, 0);
             var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 14, 20, 0);
 

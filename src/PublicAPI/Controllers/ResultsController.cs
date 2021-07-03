@@ -60,8 +60,8 @@ namespace PublicAPI.Controllers
 
             //returning error message
             finalResult.AppendLine("Error.");
-            finalResult.AppendLine("Unfortunately none of our sources was able to provide data for you");
-            finalResult.AppendLine("You may try again later");
+            finalResult.AppendLine("Unfortunately none of our sources was able to provide data for you.");
+            finalResult.AppendLine("You may try again later.");
             return finalResult.ToString().TrimEnd();
 
         }

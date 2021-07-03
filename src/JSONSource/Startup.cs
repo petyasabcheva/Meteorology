@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using JSONSource.Services;
+using JSONSource.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace JSONSource
 {
@@ -20,6 +22,8 @@ namespace JSONSource
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MyAppSettings>(Configuration.GetSection(MyAppSettings.SectionName));
+            services.AddDbContext<JsonDbContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("JsonConnectionString")));
             services.AddControllers();
         }
 
