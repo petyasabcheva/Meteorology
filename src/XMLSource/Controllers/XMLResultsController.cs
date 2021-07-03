@@ -16,7 +16,7 @@ using XMLSource.Services;
 
 namespace XMLSource.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/today")]
     [ApiController]
     public class XMLResultsController : ControllerBase
     {
@@ -33,24 +33,47 @@ namespace XMLSource.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var xmlKey = _options.Value.AppKey;
-            var request = Request;
-            var encodedKey = GetKeyFromRequest(request);
-            var decodedKey = DecodeKey(encodedKey);
-            var result= db.Results.FirstOrDefault();
-            var resultToReturn = new ResultToReturn();
-
-            
-            if (decodedKey == xmlKey)
+            var resultToReturn = new ResultToReturn
             {
-                resultToReturn.Error = 0;
-                resultToReturn.Temperature = result.Temperature;
-                resultToReturn.Pressure = result.Pressure;
-                var serializedResult = SerializeObject(resultToReturn);
-                return Ok(serializedResult);
+                Success = false,
+                Error = 2
+            };
+            var request = Request;
+            if (!request.Headers.Any(x => x.Key == "Authorization"))
+            {
+                resultToReturn.Error = 1;
+                return NotFound(SerializeObject(resultToReturn));
+
+            }
+            var workingTime = GetWorkingTime();
+            var timeNow = DateTime.UtcNow;
+            if (workingTime[0] > timeNow || workingTime[1] < timeNow)
+            {
+                resultToReturn.Error = 3;
+                return NotFound(SerializeObject(resultToReturn));
             }
 
-            return Unauthorized();
+            var xmlKey = _options.Value.AppKey;
+            var encodedKey = GetKeyFromRequest(request);
+            var decodedKey = DecodeKey(encodedKey);
+            var result = db.Results.FirstOrDefault();
+           
+
+            if (decodedKey == xmlKey)
+            {
+                resultToReturn.Success = true;
+                resultToReturn.Error = 0;
+                resultToReturn.Data = new Data.Data() { Temperature = result.Temperature, Pressure = result.Pressure };
+
+                return Ok(SerializeObject(resultToReturn));
+            }
+            else
+            {
+                resultToReturn.Success = false;
+                resultToReturn.Error = 1;
+            }
+
+            return NotFound(SerializeObject(resultToReturn));
         }
 
         static string GetKeyFromRequest(HttpRequest request)
@@ -68,7 +91,7 @@ namespace XMLSource.Controllers
             return decodedKey;
         }
 
-        public static string SerializeObject( ResultToReturn toSerialize)
+        public static string SerializeObject(ResultToReturn toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
@@ -77,6 +100,18 @@ namespace XMLSource.Controllers
                 xmlSerializer.Serialize(textWriter, toSerialize);
                 return textWriter.ToString();
             }
+        }
+
+        static List<DateTime> GetWorkingTime()
+        {
+            var dateToday = DateTime.UtcNow;
+            var startTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 10, 30, 0);
+            var endTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 14, 20, 0);
+            return new List<DateTime>
+            {
+                startTimeToday,
+                endTimeToday
+            };
         }
 
     }

@@ -13,7 +13,7 @@ using PublicAPI.Services;
 
 namespace PublicAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/today")]
     [ApiController]
     public class ResultsController : ControllerBase
     {
@@ -21,8 +21,8 @@ namespace PublicAPI.Controllers
         private readonly IOptions<MyAppSettings> _options;
         private readonly string _jsonAppKey;
         private readonly string _xmlAppKey;
-        private string _jsonUrl = "http://localhost:58270/api/jsonresults";
-        private string _xmlUrl = "http://localhost:43529/api/xmlresults";
+        private string _jsonUrl = "http://localhost:58270/today";
+        private string _xmlUrl = "http://localhost:43529/today";
 
 
 
@@ -57,10 +57,10 @@ namespace PublicAPI.Controllers
             var xmlEncodedKey = EncodeKey(_xmlAppKey);
 
             HttpResponseMessage xmlResponse = await _client.SendAsync(CreateRequestMessage(xmlEncodedKey, _xmlUrl));
-            if (xmlResponse.IsSuccessStatusCode)
-            {
+            //if (xmlResponse.IsSuccessStatusCode)
+            //{
                 xmlResult = await xmlResponse.Content.ReadAsStringAsync();
-            }
+            //}
 
             finalResult.AppendLine(xmlResult);
             return finalResult.ToString().TrimEnd();

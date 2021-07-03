@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/xmlresults",
+      "launchUrl": "today",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "XMLSource": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/xmlresults",
+      "launchUrl": "today",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

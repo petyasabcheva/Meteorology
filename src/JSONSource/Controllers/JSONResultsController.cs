@@ -14,13 +14,12 @@ using Microsoft.Extensions.Options;
 
 namespace JSONSource.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/today")]
     [ApiController]
     public class JsonResultsController : ControllerBase
     {
         private JsonDbContext db;
         private readonly IOptions<MyAppSettings> _options;
-
 
         public JsonResultsController(IOptions<MyAppSettings> options)
         {
@@ -31,13 +30,19 @@ namespace JSONSource.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            var workingTime = GetWorkingTime();
+            var timeNow = DateTime.UtcNow;
+            if (workingTime[0]>timeNow||workingTime[1]<timeNow)
+            {
+                return new ObjectResult(new ResultInformation() {Message = "Offline",StatusCode = 504});
+            }
             var jsonKey = _options.Value.AppKey;
             var request = Request;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
             var result = db.Results.FirstOrDefault();
             var response = new ResultToReturn();
-            if (decodedKey==jsonKey)
+            if (decodedKey == jsonKey)
             {
                 response.Temperature = result.Temperature;
                 response.Pressure = result.Pressure;
@@ -60,6 +65,18 @@ namespace JSONSource.Controllers
             var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
             var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
             return decodedKey;
+        }
+
+        static List<DateTime> GetWorkingTime()
+        {
+            var  dateToday = DateTime.UtcNow;
+            var startTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 10, 30, 0);
+            var endTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 14, 20, 0);
+            return new List<DateTime>
+            {
+                startTimeToday,
+                endTimeToday
+            };
         }
     }
 }

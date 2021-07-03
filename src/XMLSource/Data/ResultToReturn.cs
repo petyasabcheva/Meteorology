@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Microsoft.Extensions.Localization;
 
 namespace XMLSource.Data
 {
-    [XmlRoot("response")]
-    [Serializable()]
+    [Serializable]
+    [XmlRootAttribute("response",
+        IsNullable = false)]
     public class ResultToReturn
     {
-        public int Success { get; set; }
+        [XmlElement("success")]
+        public bool Success { get; set; }
+        [XmlElement("error")]
         public int Error { get; set; }
-        public double Temperature { get; set; }
-        public double Pressure { get; set; }
 
+        [XmlElement("data")]
+        public Data? Data { get; set; }
     }
 }
