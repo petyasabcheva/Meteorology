@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,31 +35,33 @@ namespace PublicAPI.Controllers
         public async Task<string> Get()
         {
             var finalResult = new StringBuilder();
-            finalResult.AppendLine("This is the result from the first source in JSON");
-            var jsonResult = "";
             var jsonEncodedKey = EncodeKey(_jsonAppKey);
 
+            //making request to Source 1 (JsonSource)
             HttpResponseMessage jsonResponse = await _client.SendAsync(CreateRequestMessage(jsonEncodedKey, _jsonUrl));
-
             if (jsonResponse.IsSuccessStatusCode)
             {
-                jsonResult = await jsonResponse.Content.ReadAsStringAsync();
+                var jsonResult = await jsonResponse.Content.ReadAsStringAsync();
+                finalResult.AppendLine("This is the result from the Source 1 in JSON format");
+                finalResult.AppendLine(jsonResult);
+                return finalResult.ToString().TrimEnd();
             }
-            finalResult.AppendLine(jsonResult);
 
-
-
-            finalResult.AppendLine("This is the result from the second source in XML");
-            var xmlResult = "";
+            //making request to Source 2 (XmlSource)
             var xmlEncodedKey = EncodeKey(_xmlAppKey);
-
             HttpResponseMessage xmlResponse = await _client.SendAsync(CreateRequestMessage(xmlEncodedKey, _xmlUrl));
-            //if (xmlResponse.IsSuccessStatusCode)
-            //{
-                xmlResult = await xmlResponse.Content.ReadAsStringAsync();
-            //}
+            if (xmlResponse.IsSuccessStatusCode)
+            {
+                var xmlResult = await xmlResponse.Content.ReadAsStringAsync();
+                finalResult.AppendLine("This is the result from the second source in XML");
+                finalResult.AppendLine(xmlResult);
+                return finalResult.ToString().TrimEnd();
+            }
 
-            finalResult.AppendLine(xmlResult);
+            //returning error message
+            finalResult.AppendLine("Error.");
+            finalResult.AppendLine("Unfortunately none of our sources was able to provide data for you");
+            finalResult.AppendLine("You may try again later");
             return finalResult.ToString().TrimEnd();
 
         }

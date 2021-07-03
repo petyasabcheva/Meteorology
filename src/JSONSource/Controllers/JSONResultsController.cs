@@ -2,12 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using JSONSource.Data;
+using JSONSource.Models;
 using JSONSource.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -30,26 +27,41 @@ namespace JSONSource.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var workingTime = GetWorkingTime();
-            var timeNow = DateTime.UtcNow;
-            if (workingTime[0]>timeNow||workingTime[1]<timeNow)
+            var request = Request;
+            if (!request.Headers.Any(x => x.Key == "Authorization"))
             {
+                //no authorization header
+                return new ObjectResult(new ResultInformation() { Message = "Unauthorized", StatusCode = 401 });
+
+            }
+
+            if (!IsWorkingNow())
+            {
+                //source is offline 
                 return new ObjectResult(new ResultInformation() {Message = "Offline",StatusCode = 504});
             }
             var jsonKey = _options.Value.AppKey;
-            var request = Request;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
-            var result = db.Results.FirstOrDefault();
+            var result = db.Results.First();
             var response = new ResultToReturn();
+
             if (decodedKey == jsonKey)
             {
+                //correct authorization header
                 response.Temperature = result.Temperature;
                 response.Pressure = result.Pressure;
                 return Ok(response);
             }
+            if (decodedKey != jsonKey)
+            {
+                //wrong authorization header
+                return new ObjectResult(new ResultInformation() { Message = "Unauthorized", StatusCode = 401 });
 
-            return Unauthorized();
+            }
+
+            //unexpected error
+            return new ObjectResult(new ResultInformation() { Message = "Unexpected error", StatusCode = 500 });
         }
 
         static string GetKeyFromRequest(HttpRequest request)
@@ -67,16 +79,18 @@ namespace JSONSource.Controllers
             return decodedKey;
         }
 
-        static List<DateTime> GetWorkingTime()
+        static bool IsWorkingNow()
         {
-            var  dateToday = DateTime.UtcNow;
-            var startTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 10, 30, 0);
-            var endTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 14, 20, 0);
-            return new List<DateTime>
+            var  timeNow = DateTime.UtcNow;
+            var startTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 8, 30, 0);
+            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 14, 20, 0);
+
+            if (startTimeToday > timeNow || endTimeToday < timeNow)
             {
-                startTimeToday,
-                endTimeToday
-            };
+                return false;
+            }
+
+            return true;
         }
     }
 }

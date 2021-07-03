@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
-using Microsoft.Extensions.Localization;
 
-namespace XMLSource.Data
+namespace XMLSource.Models
 {
     [Serializable]
-    [XmlRootAttribute("response",
+    [XmlRoot("response",
         IsNullable = false)]
     public class ResultToReturn
     {

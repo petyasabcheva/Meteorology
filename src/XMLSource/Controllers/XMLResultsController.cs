@@ -3,15 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
-using XMLSource.Data;
+using XMLSource.Models;
 using XMLSource.Services;
 
 namespace XMLSource.Controllers
@@ -29,7 +24,7 @@ namespace XMLSource.Controllers
             _options = options;
         }
 
-        // GET: api/<ResultsController>
+         
         [HttpGet]
         public IActionResult Get()
         {
@@ -38,17 +33,19 @@ namespace XMLSource.Controllers
                 Success = false,
                 Error = 2
             };
+
             var request = Request;
             if (!request.Headers.Any(x => x.Key == "Authorization"))
             {
+                //missing authorization header
                 resultToReturn.Error = 1;
                 return NotFound(SerializeObject(resultToReturn));
 
             }
-            var workingTime = GetWorkingTime();
-            var timeNow = DateTime.UtcNow;
-            if (workingTime[0] > timeNow || workingTime[1] < timeNow)
+           
+            if (!IsWorkingNow())
             {
+                //source is offline 
                 resultToReturn.Error = 3;
                 return NotFound(SerializeObject(resultToReturn));
             }
@@ -56,23 +53,25 @@ namespace XMLSource.Controllers
             var xmlKey = _options.Value.AppKey;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
-            var result = db.Results.FirstOrDefault();
+            var result = db.Results.First();
            
 
             if (decodedKey == xmlKey)
             {
+                //correct authorization header
                 resultToReturn.Success = true;
                 resultToReturn.Error = 0;
-                resultToReturn.Data = new Data.Data() { Temperature = result.Temperature, Pressure = result.Pressure };
+                resultToReturn.Data = new Models.Data() { Temperature = result.Temperature, Pressure = result.Pressure };
 
                 return Ok(SerializeObject(resultToReturn));
             }
-            else
+            if(decodedKey != xmlKey)
             {
-                resultToReturn.Success = false;
+                //wrong authorization header
                 resultToReturn.Error = 1;
             }
 
+            //unexpected error
             return NotFound(SerializeObject(resultToReturn));
         }
 
@@ -102,16 +101,18 @@ namespace XMLSource.Controllers
             }
         }
 
-        static List<DateTime> GetWorkingTime()
+        static bool IsWorkingNow()
         {
-            var dateToday = DateTime.UtcNow;
-            var startTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 10, 30, 0);
-            var endTimeToday = new DateTime(dateToday.Year, dateToday.Month, dateToday.Day, 14, 20, 0);
-            return new List<DateTime>
+            var timeNow = DateTime.UtcNow;
+            var startTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 14, 30, 0);
+            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 20, 20, 0);
+
+            if (startTimeToday > timeNow || endTimeToday < timeNow)
             {
-                startTimeToday,
-                endTimeToday
-            };
+                return false;
+            }
+
+            return true;
         }
 
     }
