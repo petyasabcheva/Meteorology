@@ -5,8 +5,10 @@ using System.Linq;
 using JSONSource.Models;
 using JsonSource.Services;
 using JSONSource.Services;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using IKeyManager = JsonSource.Services.IKeyManager;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,11 +20,14 @@ namespace JSONSource.Controllers
     {
         private readonly IOptions<MyAppSettings> _options;
         private readonly IResultsService _resultsService;
+        private readonly IKeyManager _keyManager;
 
-        public JsonResultsController(IOptions<MyAppSettings> options, IResultsService resultsService)
+        public JsonResultsController(IOptions<MyAppSettings> options, IResultsService resultsService, IKeyManager keyManager)
         {
             this._resultsService = resultsService;
-            _options = options;
+            this._options = options;
+            this._keyManager = keyManager;
+
         }
         // GET: api/<ResultsController>
         [HttpGet]
@@ -48,8 +53,8 @@ namespace JSONSource.Controllers
                 };
             }
             var jsonKey = _options.Value.AppKey;
-            var encodedKey = GetKeyFromRequest(request);
-            var decodedKey = DecodeKey(encodedKey);
+            var encodedKey = _keyManager.GetKeyFromRequest(request);
+            var decodedKey = _keyManager.DecodeKey(encodedKey);
             var result = this._resultsService.GetToday();
             var response = new ResultToReturn();
 
@@ -71,20 +76,7 @@ namespace JSONSource.Controllers
             return new ObjectResult(new ResultInformation() { Message = "Unexpected error", StatusCode = 500 });
         }
 
-        static string GetKeyFromRequest(HttpRequest request)
-        {
-            var authHeader = request.Headers.First(h => h.Key == "Authorization").Value.ToString();
-            var authHeaderContent = authHeader.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToArray();
-            var key = authHeaderContent[1];
-            return key;
-        }
-
-        static string DecodeKey(string encodedKey)
-        {
-            var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
-            var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-            return decodedKey;
-        }
+ 
 
         static bool IsWorkingNow()
         {

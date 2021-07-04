@@ -18,14 +18,18 @@ namespace XMLSource.Controllers
     {
         private readonly IResultsService _resultsService;
         private readonly IOptions<MyAppSettings> _options;
+        private readonly IKeyManager _keyManager;
 
-        public XmlResultsController(IOptions<MyAppSettings> options, IResultsService resultsService)
+
+        public XmlResultsController(IOptions<MyAppSettings> options, IResultsService resultsService, IKeyManager keyManager)
         {
             this._resultsService = resultsService;
             _options = options;
+            this._keyManager = keyManager;
+
         }
 
-         
+
         [HttpGet]
         public IActionResult Get()
         {
@@ -52,8 +56,8 @@ namespace XMLSource.Controllers
             }
 
             var xmlKey = _options.Value.AppKey;
-            var encodedKey = GetKeyFromRequest(request);
-            var decodedKey = DecodeKey(encodedKey);
+            var encodedKey = _keyManager.GetKeyFromRequest(request);
+            var decodedKey = _keyManager.DecodeKey(encodedKey);
             var result = this._resultsService.GetToday();
            
 
@@ -76,29 +80,7 @@ namespace XMLSource.Controllers
             return NotFound(SerializeObject(resultToReturn));
         }
 
-        static string GetKeyFromRequest(HttpRequest request)
-        {
-            var authHeader = request.Headers.First(h => h.Key == "Authorization").Value.ToString();
-            var authHeaderContent = authHeader.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToArray();
-            var key = authHeaderContent[1];
-            return key;
-        }
-
-        static string DecodeKey(string encodedKey)
-        {
-            try
-            {
-                var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
-                var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-                return decodedKey;
-
-            }
-            catch
-            {
-                return "";
-            }
-        }
-
+       
         public static string SerializeObject(ResultToReturn toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());

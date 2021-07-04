@@ -27,6 +27,7 @@ namespace XMLSource
                options.UseSqlServer(Configuration.GetConnectionString("XmlConnectionString")));
             services.AddControllers();
             services.AddTransient<IResultsService, ResultsService>();
+            services.AddTransient<IKeyManager, KeyManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
