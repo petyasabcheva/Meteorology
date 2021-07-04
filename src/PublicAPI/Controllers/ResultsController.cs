@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -36,6 +38,7 @@ namespace PublicAPI.Controllers
         {
             var finalResult = new StringBuilder();
             var jsonEncodedKey = EncodeKey(_jsonAppKey);
+
 
             //making request to Source 1 (JsonSource)
             HttpResponseMessage jsonResponse = await _client.SendAsync(CreateRequestMessage(jsonEncodedKey, _jsonUrl));
@@ -81,7 +84,9 @@ namespace PublicAPI.Controllers
                 RequestUri = new Uri(url),
                 Headers =
                 {
-                    { "Authorization", $"Basic {encodedKey}"}
+                    { "Authorization", $"Basic {encodedKey}"},
+                    {"Keep-Alive","timeout=5"}
+                    
                 },
 
             };
