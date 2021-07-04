@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using XMLSource.Models;
+using XmlSource.Models;
 
-namespace XMLSource.Migrations
+namespace XmlSource.Migrations
 {
     [DbContext(typeof(XmlDbContext))]
     [Migration("20210629195754_InitialCreate")]

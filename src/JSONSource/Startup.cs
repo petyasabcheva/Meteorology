@@ -1,14 +1,13 @@
+using JsonSource.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using JSONSource.Services;
-using JSONSource.Models;
 using JsonSource.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace JSONSource
+namespace JsonSource
 {
     public class Startup
     {

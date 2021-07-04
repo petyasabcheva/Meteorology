@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace JSONSource.Models
+namespace JsonSource.Models
 {
     public class JsonDbContext:DbContext
     {

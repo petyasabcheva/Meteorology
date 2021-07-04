@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using XMLSource.Models;
+using XmlSource.Models;
 
-namespace XMLSource.Migrations
+namespace XmlSource.Migrations
 {
     [DbContext(typeof(XmlDbContext))]
     partial class XMLDbContextModelSnapshot : ModelSnapshot
@@ -18,7 +18,7 @@ namespace XMLSource.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("XMLSource.Data.Result", b =>
+            modelBuilder.Entity("XmlSource.Models.Result", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace XMLSource.Migrations
                         new
                         {
                             Id = 1,
-                            Pressure = 108.0,
+                            Pressure = 916.0,
                             Temperature = 20.5
                         });
                 });

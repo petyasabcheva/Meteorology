@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace JSONSource.Migrations
+namespace JsonSource.Migrations
 {
     public partial class InitialCreate : Migration
     {

@@ -1,4 +1,4 @@
-﻿namespace JSONSource.Models
+﻿namespace JsonSource.Models
 {
     public class Result
     {

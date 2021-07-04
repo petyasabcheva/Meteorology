@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using XMLSource.Models;
+using XmlSource.Models;
 using XmlSource.Services;
-using XMLSource.Services;
 
-namespace XMLSource.Controllers
+namespace XmlSource.Controllers
 {
     [Route("/today")]
     [ApiController]
@@ -96,7 +93,7 @@ namespace XMLSource.Controllers
         {
             var timeNow = DateTime.UtcNow;
             var startTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 14, 30, 0);
-            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 22, 20, 0);
+            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 18, 20, 0);
 
             if (startTimeToday > timeNow || endTimeToday < timeNow)
             {

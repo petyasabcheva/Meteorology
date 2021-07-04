@@ -1,4 +1,4 @@
-﻿namespace XMLSource.Services
+﻿namespace XmlSource.Services
 {
     public class MyAppSettings
     {

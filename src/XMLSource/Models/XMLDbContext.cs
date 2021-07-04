@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace XMLSource.Models
+namespace XmlSource.Models
 {
     public class XmlDbContext:DbContext
     {

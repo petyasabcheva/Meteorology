@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace XMLSource.Models
+namespace XmlSource.Models
 {
     [Serializable]
     [XmlRoot("response",

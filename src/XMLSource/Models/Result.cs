@@ -1,4 +1,4 @@
-﻿namespace XMLSource.Models
+﻿namespace XmlSource.Models
 {
     public class Result
     { 

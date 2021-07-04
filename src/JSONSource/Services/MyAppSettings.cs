@@ -1,4 +1,4 @@
-﻿namespace JSONSource.Services
+﻿namespace JsonSource.Services
 {
     public class MyAppSettings
     {

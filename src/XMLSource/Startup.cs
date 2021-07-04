@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using XMLSource.Models;
+using XmlSource.Models;
 using XmlSource.Services;
-using XMLSource.Services;
 
-namespace XMLSource
+namespace XmlSource
 {
     public class Startup
     {

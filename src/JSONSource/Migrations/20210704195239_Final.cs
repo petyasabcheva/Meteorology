@@ -2,22 +2,26 @@
 
 namespace JsonSource.Migrations
 {
-    public partial class SeedingData : Migration
+    public partial class Final : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.InsertData(
+            migrationBuilder.UpdateData(
                 table: "Results",
-                columns: new[] { "Id", "Pressure", "Temperature" },
-                values: new object[] { 1, 200.0, 36.5 });
+                keyColumn: "Id",
+                keyValue: 1,
+                column: "Pressure",
+                value: 1000.0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
+            migrationBuilder.UpdateData(
                 table: "Results",
                 keyColumn: "Id",
-                keyValue: 1);
+                keyValue: 1,
+                column: "Pressure",
+                value: 200.0);
         }
     }
 }

@@ -1,18 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using JSONSource.Models;
+using JsonSource.Models;
 using JsonSource.Services;
-using JSONSource.Services;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using IKeyManager = JsonSource.Services.IKeyManager;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace JSONSource.Controllers
+namespace JsonSource.Controllers
 {
     [Route("/today")]
     [ApiController]
@@ -29,7 +23,7 @@ namespace JSONSource.Controllers
             this._keyManager = keyManager;
 
         }
-        // GET: api/<ResultsController>
+        
         [HttpGet]
         public IActionResult Get()
         {
@@ -75,8 +69,6 @@ namespace JSONSource.Controllers
             //unexpected error
             return new ObjectResult(new ResultInformation() { Message = "Unexpected error", StatusCode = 500 });
         }
-
- 
 
         static bool IsWorkingNow()
         {
