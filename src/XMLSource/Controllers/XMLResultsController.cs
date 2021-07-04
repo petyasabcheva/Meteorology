@@ -57,11 +57,11 @@ namespace XMLSource.Controllers
 
             var xmlKey = _options.Value.AppKey;
             var encodedKey = _keyManager.GetKeyFromRequest(request);
-            var decodedKey = _keyManager.DecodeKey(encodedKey);
+            var encodedOriginalKey = _keyManager.EncodeKey(xmlKey);
             var result = this._resultsService.GetToday();
            
 
-            if (decodedKey == xmlKey)
+            if (encodedKey == encodedOriginalKey)
             {
                 //correct authorization header
                 resultToReturn.Success = true;
@@ -70,7 +70,7 @@ namespace XMLSource.Controllers
 
                 return Ok(SerializeObject(resultToReturn));
             }
-            if(decodedKey != xmlKey)
+            if(encodedKey != encodedOriginalKey)
             {
                 //wrong authorization header
                 resultToReturn.Error = 1;

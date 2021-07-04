@@ -53,19 +53,19 @@ namespace JSONSource.Controllers
                 };
             }
             var jsonKey = _options.Value.AppKey;
-            var encodedKey = _keyManager.GetKeyFromRequest(request);
-            var decodedKey = _keyManager.DecodeKey(encodedKey);
             var result = this._resultsService.GetToday();
+            var encodedKey = _keyManager.GetKeyFromRequest(request);
+            var encodedOriginalKey = _keyManager.EncodeKey(jsonKey);
             var response = new ResultToReturn();
 
-            if (decodedKey == jsonKey)
+            if (encodedOriginalKey == encodedKey)
             {
                 //correct authorization header
                 response.Temperature = result.Temperature;
                 response.Pressure = result.Pressure;
                 return Ok(response);
             }
-            if (decodedKey != jsonKey)
+            if (encodedOriginalKey != encodedKey)
             {
                 //wrong authorization header
                 return new ObjectResult(new ResultInformation() { Message = "Unauthorized", StatusCode = 401 }) { StatusCode = 401 };

@@ -10,7 +10,7 @@ namespace JsonSource.Services
     {
         string GetKeyFromRequest(HttpRequest request);
 
-        string DecodeKey(string encodedKey);
+        string EncodeKey(string originalKey);
 
     }
 }

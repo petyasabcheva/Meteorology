@@ -9,6 +9,6 @@ namespace XmlSource.Services
     public interface IKeyManager
     {
         string GetKeyFromRequest(HttpRequest request);
-        string DecodeKey(string encodedKey);
+        string EncodeKey(string originalKey);
     }
 }

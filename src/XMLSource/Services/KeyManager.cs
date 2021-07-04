@@ -16,19 +16,11 @@ namespace XmlSource.Services
             return key;
         }
 
-        public string DecodeKey(string encodedKey)
+        public string EncodeKey(string originalKey)
         {
-            try
-            {
-                var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
-                var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-                return decodedKey;
-
-            }
-            catch
-            {
-                return "";
-            }
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(originalKey);
+            var encodedKey = System.Convert.ToBase64String(plainTextBytes);
+            return encodedKey;
         }
 
     }

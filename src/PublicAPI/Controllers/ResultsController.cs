@@ -20,8 +20,8 @@ namespace PublicAPI.Controllers
         private readonly IOptions<MyAppSettings> _options;
         private readonly string _jsonAppKey;
         private readonly string _xmlAppKey;
-        private string _jsonUrl = "http://localhost:58270/today";
-        private string _xmlUrl = "http://localhost:43529/today";
+        private readonly string _jsonUrl = "http://localhost:58270/today";
+        private readonly string _xmlUrl = "http://localhost:43529/today";
 
 
 
