@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using JSONSource.Services;
 using JSONSource.Models;
+using JsonSource.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace JSONSource
@@ -25,6 +26,8 @@ namespace JSONSource
             services.AddDbContext<JsonDbContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("JsonConnectionString")));
             services.AddControllers();
+
+            services.AddTransient<IResultsService, ResultsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

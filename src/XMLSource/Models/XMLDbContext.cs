@@ -2,9 +2,9 @@
 
 namespace XMLSource.Models
 {
-    public class XMLDbContext:DbContext
+    public class XmlDbContext:DbContext
     {
-        public XMLDbContext(DbContextOptions<XMLDbContext> options)
+        public XmlDbContext(DbContextOptions<XmlDbContext> options)
             :base(options)
         {
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JSONSource.Models;
+using JsonSource.Services;
 using JSONSource.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -15,12 +16,12 @@ namespace JSONSource.Controllers
     [ApiController]
     public class JsonResultsController : ControllerBase
     {
-        private JsonDbContext _db;
         private readonly IOptions<MyAppSettings> _options;
+        private readonly IResultsService _resultsService;
 
-        public JsonResultsController(IOptions<MyAppSettings> options, JsonDbContext db)
+        public JsonResultsController(IOptions<MyAppSettings> options, IResultsService resultsService)
         {
-            this._db = db;
+            this._resultsService = resultsService;
             _options = options;
         }
         // GET: api/<ResultsController>
@@ -49,7 +50,7 @@ namespace JSONSource.Controllers
             var jsonKey = _options.Value.AppKey;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
-            var result = _db.Results.First();
+            var result = this._resultsService.GetToday();
             var response = new ResultToReturn();
 
             if (decodedKey == jsonKey)

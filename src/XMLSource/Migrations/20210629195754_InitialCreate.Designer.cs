@@ -8,7 +8,7 @@ using XMLSource.Models;
 
 namespace XMLSource.Migrations
 {
-    [DbContext(typeof(XMLDbContext))]
+    [DbContext(typeof(XmlDbContext))]
     [Migration("20210629195754_InitialCreate")]
     partial class InitialCreate
     {

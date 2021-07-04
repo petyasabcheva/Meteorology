@@ -7,7 +7,7 @@ using XMLSource.Models;
 
 namespace XMLSource.Migrations
 {
-    [DbContext(typeof(XMLDbContext))]
+    [DbContext(typeof(XmlDbContext))]
     partial class XMLDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

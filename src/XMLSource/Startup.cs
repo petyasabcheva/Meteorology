@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using XMLSource.Models;
+using XmlSource.Services;
 using XMLSource.Services;
 
 namespace XMLSource
@@ -22,9 +23,10 @@ namespace XMLSource
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MyAppSettings>(Configuration.GetSection(MyAppSettings.SectionName));
-            services.AddDbContext<XMLDbContext>(options =>
+            services.AddDbContext<XmlDbContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("XmlConnectionString")));
             services.AddControllers();
+            services.AddTransient<IResultsService, ResultsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

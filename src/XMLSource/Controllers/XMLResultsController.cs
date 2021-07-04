@@ -7,20 +7,21 @@ using System.Xml.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using XMLSource.Models;
+using XmlSource.Services;
 using XMLSource.Services;
 
 namespace XMLSource.Controllers
 {
     [Route("/today")]
     [ApiController]
-    public class XMLResultsController : ControllerBase
+    public class XmlResultsController : ControllerBase
     {
-        private XMLDbContext _db;
+        private readonly IResultsService _resultsService;
         private readonly IOptions<MyAppSettings> _options;
 
-        public XMLResultsController(IOptions<MyAppSettings> options,XMLDbContext db)
+        public XmlResultsController(IOptions<MyAppSettings> options, IResultsService resultsService)
         {
-            this._db = db;
+            this._resultsService = resultsService;
             _options = options;
         }
 
@@ -53,7 +54,7 @@ namespace XMLSource.Controllers
             var xmlKey = _options.Value.AppKey;
             var encodedKey = GetKeyFromRequest(request);
             var decodedKey = DecodeKey(encodedKey);
-            var result = _db.Results.First();
+            var result = this._resultsService.GetToday();
            
 
             if (decodedKey == xmlKey)
