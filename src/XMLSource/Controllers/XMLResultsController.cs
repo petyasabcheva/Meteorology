@@ -86,9 +86,17 @@ namespace XMLSource.Controllers
 
         static string DecodeKey(string encodedKey)
         {
-            var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
-            var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-            return decodedKey;
+            try
+            {
+                var base64EncodedBytes = System.Convert.FromBase64String(encodedKey);
+                var decodedKey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+                return decodedKey;
+
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         public static string SerializeObject(ResultToReturn toSerialize)
@@ -106,7 +114,7 @@ namespace XMLSource.Controllers
         {
             var timeNow = DateTime.UtcNow;
             var startTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 14, 30, 0);
-            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 16, 20, 0);
+            var endTimeToday = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, 22, 20, 0);
 
             if (startTimeToday > timeNow || endTimeToday < timeNow)
             {
