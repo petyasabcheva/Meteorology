@@ -12,9 +12,5 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\JSONSource\JsonSource.csproj" />
-  </ItemGroup>
-
 
 </Project>
