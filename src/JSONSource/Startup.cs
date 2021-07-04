@@ -46,6 +46,7 @@ namespace JsonSource
             {
                 endpoints.MapControllers();
             });
+            app.ApplyMigrations();
         }
     }
 }
